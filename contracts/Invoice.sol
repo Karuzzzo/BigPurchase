@@ -3,7 +3,7 @@ pragma solidity < 0.8.0;
 import "./Libs/SafeMath.sol";
 import "./BigPurchase.sol";
 
-    //This contract is taken from 
+    //This contract partially taken from 
     //https://github.com/smartzplatform/constructor-eth-invoice/blob/4a186dc8fc4da84dbcbc15114b7e6d1cc00f44cd/contracts/Invoice.sol
     //and implements invoice creation for whoever buys products in contract.
 contract Invoice {

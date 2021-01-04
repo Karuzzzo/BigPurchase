@@ -40,13 +40,15 @@ contract BigPurchase{
 
     constructor() public {
         owner = msg.sender;
-        addProduct("Apples", 10, 20, 5);        //we make position of 20 apples, discount will be made from 5 or more. Price of one apple 10 finney (value should be thought out)
+        addProduct("Apples", 10, 20, 5);        //example position of 20 apples, discount will be made from 5 or more. Price of one apple is 10 units (value should be thought out)
     }
 
     function addProduct(string memory _name, uint _price, uint _amount, uint _treshold) public OnlyOwner {
         bool productExist = false;
+        
+        //if we already have same product with same price, we add new product to existing
         if(ProductsCount >= 1 )
-            for(uint a = 0; a<= ProductsCount; a.add(1)){       //if we already have same product with same price, we add new product to existing
+            for(uint a = 0; ((a <= ProductsCount) && (!productExist)); a.add(1)){       
                 if(Products[a].Price == _price)
                     if(Products[a].Treshold == _treshold)
                         if(keccak256(abi.encodePacked(Products[a].Name)) == keccak256(abi.encodePacked(_name))){
@@ -81,14 +83,15 @@ contract BigPurchase{
             delete(Products[ProductId]);
             emit ProductRunOut(toBuy.Name);                          //later implement shifting id of elements, so there will be no gaps in mapping
         } else {
-            Products[ProductId].Amount =Products[ProductId].Amount.sub(amount);
+            Products[ProductId].Amount = Products[ProductId].Amount.sub(amount);
         }
         
-        InvoicesCount.add(1);
+        InvoicesCount.add(1);                         //creating new invoice for customer to pay
         Invoices[InvoicesCount] = new Invoice(TotalPrice, InvoicesCount, msg.sender, address(uint160(address(this))));
         ProductStash[InvoicesCount] = toBuy;
         emit AwaitingPayment(toBuy.Name, amount, TotalPrice, InvoicesCount);
     } 
+
     function finalizeInvoice(uint InvoiceNumber, bool allPayed) 
     public 
     OnlyOwnedInvoices(InvoiceNumber)                //this function called only from created invoices 
