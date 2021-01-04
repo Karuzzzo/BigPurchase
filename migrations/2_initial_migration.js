@@ -1,5 +1,5 @@
-var Election = artifacts.require("../contracts/Election.sol");
+var BigPurchase = artifacts.require("../contracts/BigPurchase.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(Election);
+  deployer.deploy(BigPurchase);
 };

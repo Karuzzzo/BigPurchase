@@ -1,5 +1,5 @@
 var Election = artifacts.require("../contracts/Election.sol");
-
+//This is tests not for this contracts
 contract("Election", function(accounts){
     var electionInstance;
 
