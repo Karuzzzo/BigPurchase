@@ -46,16 +46,17 @@ contract BigPurchase{
     function addProduct(string memory _name, uint _price, uint _amount, uint _treshold) public OnlyOwner {
         bool productExist = false;
         
-        //if we already have same product with same price, we add new product to existing
-        if(ProductsCount >= 1 )
-            for(uint a = 0; ((a <= ProductsCount) && (!productExist)); a.add(1)){       
-                if(Products[a].Price == _price)
-                    if(Products[a].Treshold == _treshold)
-                        if(keccak256(abi.encodePacked(Products[a].Name)) == keccak256(abi.encodePacked(_name))){
-                            Products[a].Amount.add(_amount);        //we cant compare strings directly, so compare their hashes
-                            productExist = true;
-                        }
-            }
+        //I have no idea why, but code down here doesnt work 
+        // //if we already have same product with same price, we add new product to existing
+        // if(ProductsCount >= 1 )
+        //     for(uint a = 0; ((a <= ProductsCount) && (!productExist)); a.add(1)){       
+        //         if(Products[a].Price == _price)
+        //             if(Products[a].Treshold == _treshold)
+        //                 if(keccak256(abi.encodePacked(Products[a].Name)) == keccak256(abi.encodePacked(_name))){
+        //                     Products[a].Amount.add(_amount);        //we cant compare strings directly, so compare their hashes
+        //                     productExist = true;
+        //                 }
+        //     }
 
         if(!productExist){
             ProductsCount = ProductsCount.add(1);
