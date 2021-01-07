@@ -22,7 +22,9 @@ contract BigPurchase{
 
     //list of Products
     mapping(uint => Product) public Products;
+    mapping(bytes32 => uint) public ProductHashes;    
     uint public ProductsCount;
+
 
     mapping(uint => Invoice) public Invoices;
     uint public InvoicesCount;
@@ -43,24 +45,23 @@ contract BigPurchase{
         addProduct("Apples", 10, 20, 5);        //example position of 20 apples, discount will be made from 5 or more. Price of one apple is 10 units (value should be thought out)
     }
 
-    function addProduct(string memory _name, uint _price, uint _amount, uint _treshold) public OnlyOwner {
-        bool productExist = false;
-        
-        //I have no idea why, but code down here doesnt work 
-        // //if we already have same product with same price, we add new product to existing
-        // if(ProductsCount >= 1 )
-        //     for(uint a = 0; ((a <= ProductsCount) && (!productExist)); a.add(1)){       
-        //         if(Products[a].Price == _price)
-        //             if(Products[a].Treshold == _treshold)
-        //                 if(keccak256(abi.encodePacked(Products[a].Name)) == keccak256(abi.encodePacked(_name))){
-        //                     Products[a].Amount.add(_amount);        //we cant compare strings directly, so compare their hashes
-        //                     productExist = true;
-        //                 }
-        //     }
+    function getHashedProduct(string memory _name, uint _price, uint _treshold) internal pure returns (bytes32){
+        return  keccak256(abi.encodePacked(_name))^
+                keccak256(abi.encodePacked(_price))^
+                keccak256(abi.encodePacked(_treshold));
+    }
 
-        if(!productExist){
+    function addProduct(string memory _name, uint _price, uint _amount, uint _treshold) public OnlyOwner {
+        
+        bytes32 hashedProduct = getHashedProduct(_name, _price, _treshold);
+
+        //if we have its hash in mapping, we get number of this product. If we dont, we add product hash to mapping, and create new product position.
+        if(ProductHashes[hashedProduct] == 0){
             ProductsCount = ProductsCount.add(1);
+            ProductHashes[hashedProduct] = ProductsCount;
             Products[ProductsCount] = Product(ProductsCount, _name, _price, _amount, _treshold);
+        } else {
+            Products[ProductHashes[hashedProduct]].Amount += _amount;   
         }
 
         emit ProductAdded(_name, _price, _amount, _treshold);
