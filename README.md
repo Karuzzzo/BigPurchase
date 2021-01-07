@@ -1,6 +1,6 @@
 # BigPurchase
 
-### Warning! This smart contract should not be used in real life, this is just an educational version.
+### Warning! This smart contract should not be used in real life, only for educational purposes.
 
 This  contract allows the creator to upload products, setting prices on it, its amount and treshold, from which there should be made a discount.
 It also allows anyone to buy products. 

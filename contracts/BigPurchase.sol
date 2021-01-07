@@ -20,7 +20,7 @@ contract BigPurchase{
 
     address payable owner;
 
-    //list of Products
+    //list of Products, and list of their hashes
     mapping(uint => Product) public Products;
     mapping(bytes32 => uint) public ProductHashes;    
     uint public ProductsCount;
@@ -42,7 +42,7 @@ contract BigPurchase{
 
     constructor() public {
         owner = msg.sender;
-        addProduct("Apples", 10, 20, 5);        //example position of 20 apples, discount will be made from 5 or more. Price of one apple is 10 units (value should be thought out)
+        //addProduct("Apples", 10, 20, 5);        //example position of 20 apples, discount will be made from 5 or more. Price of one apple is 10 units (value should be thought out)
     }
 
     function getHashedProduct(string memory _name, uint _price, uint _treshold) internal pure returns (bytes32){
@@ -52,7 +52,7 @@ contract BigPurchase{
     }
 
     function addProduct(string memory _name, uint _price, uint _amount, uint _treshold) public OnlyOwner {
-        require((bytes(_name).length >0) && (_price > 0) && _amount > 0);
+        require((bytes(_name).length > 0) && (_price > 0) && _amount > 0);
         bytes32 hashedProduct = getHashedProduct(_name, _price, _treshold);
 
         //if we have its hash in mapping, we get number of this product. If we dont, we add product hash to mapping, and create new product position.
@@ -97,12 +97,12 @@ contract BigPurchase{
 
     function finalizeInvoice(uint InvoiceNumber, bool allPayed) 
     public 
-    OnlyOwnedInvoices(InvoiceNumber)                //this function called only from created invoices 
+    OnlyOwnedInvoices(InvoiceNumber)                    //this function called only from created invoices 
     {
-        if(allPayed){
+        if(allPayed){                                   //Invoice payed, remove product from stash, closing deal   
             delete(Invoices[InvoiceNumber]);
-            delete(ProductStash[InvoiceNumber]);
-        } else {                                     //Invoice was not payed, we return product back on market
+            delete(ProductStash[InvoiceNumber]);     
+        } else {                                        //Invoice was not payed, we return product back on market
             Product memory toReturn = ProductStash[InvoiceNumber];
             addProduct(toReturn.Name, toReturn.Price, toReturn.Amount, toReturn.Treshold);
             
