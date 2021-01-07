@@ -52,7 +52,7 @@ contract BigPurchase{
     }
 
     function addProduct(string memory _name, uint _price, uint _amount, uint _treshold) public OnlyOwner {
-        
+        require((bytes(_name).length >0) && (_price > 0) && _amount > 0);
         bytes32 hashedProduct = getHashedProduct(_name, _price, _treshold);
 
         //if we have its hash in mapping, we get number of this product. If we dont, we add product hash to mapping, and create new product position.
@@ -75,7 +75,7 @@ contract BigPurchase{
               
         uint TotalPrice;
 
-        if (amount >= toBuy.Treshold){ 
+        if ((amount >= toBuy.Treshold) && (toBuy.Treshold != 0)){ 
             TotalPrice = (toBuy.Price.mul((amount.mul(95)))).div(100);         //making 5% discount, if purchase big enough
         } else {
             TotalPrice = toBuy.Price.mul(amount);
@@ -91,6 +91,7 @@ contract BigPurchase{
         InvoicesCount.add(1);                         //creating new invoice for customer to pay
         Invoices[InvoicesCount] = new Invoice(TotalPrice, InvoicesCount, msg.sender, address(uint160(address(this))));
         ProductStash[InvoicesCount] = toBuy;
+
         emit AwaitingPayment(toBuy.Name, amount, TotalPrice, InvoicesCount);
     } 
 
