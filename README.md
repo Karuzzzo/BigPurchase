@@ -34,7 +34,7 @@ And your contract deployed to ganache.
 
 Contract creator can call function addProduct, to create new position on market. After it, event triggers, notifying everyone about new product.
 
-After it, anyone can buy it, calling function buyProduct, sending identifier of requred product, and its amount.
+After it, anyone can buy it, calling function buyProduct, sending identifier of requred product and its amount.
 
 Then, buyer will get his own invoice, which he will have to pay. After payment, the deal will be marked as complete, event triggers and invoice initiates self-destruct.
 
