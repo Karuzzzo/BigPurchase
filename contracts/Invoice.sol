@@ -32,7 +32,11 @@ contract Invoice {
     );
 
 
-    uint256  invoiceAmount;
+    uint256 public invoiceAmount;
+    function GetInvoiceAmount() public view returns (uint256){
+        return invoiceAmount;
+    }
+
     uint256  paidAmount;
     uint256  validityPeriod;
     address  payer;

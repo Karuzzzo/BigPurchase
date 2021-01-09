@@ -39,15 +39,12 @@ contract BigPurchase{
         _;
     }
 
-    //thing is, as i understand, we cant access structures from another contract, as theyre not declared there. So we will get info from main contract. 
-    //On deploy, this function shall be deleted
-    function GetProduct(uint id) public view  returns (uint, string memory, uint, uint, uint){
-        return(Products[id].Id, Products[id].Name, Products[id].Price, Products[id].Amount,  Products[id].Treshold );
-    }
+
 
     constructor() public {
         owner = msg.sender;
-        //addProduct("Apples", 10, 20, 5);        //example position of 20 apples, discount will be made from 5 or more. Price of one apple is 10 units (value should be thought out)
+        ProductsCount = 0;
+        InvoicesCount = 0;
     }
 
     function getHashedProduct(string memory _name, uint _price, uint _treshold) internal pure returns (bytes32){
@@ -94,8 +91,8 @@ contract BigPurchase{
             Products[ProductId].Amount = Products[ProductId].Amount.sub(amount);
         }
         
-        InvoicesCount.add(1);                         //creating new invoice for customer to pay
-        Invoices[InvoicesCount] = new Invoice(TotalPrice, InvoicesCount, msg.sender, address(uint160(address(this))));
+        InvoicesCount = InvoicesCount.add(1);                         //creating new invoice for customer to pay
+        Invoices[InvoicesCount] = new Invoice(TotalPrice, InvoicesCount, msg.sender, owner);
         ProductStash[InvoicesCount] = toBuy;
 
         emit AwaitingPayment(toBuy.Name, amount, TotalPrice, InvoicesCount);
@@ -115,5 +112,15 @@ contract BigPurchase{
             delete(Invoices[InvoiceNumber]);
             delete(ProductStash[InvoiceNumber]);
         }
+    }
+
+    //Kostyl section
+    //thing is, as i understand, we cant access structures from another contract, as theyre not declared there. So we will get info from main contract. 
+    //On deploy, this functions shall be deleted
+    function GetProduct(uint id) public view  returns (uint, string memory, uint, uint, uint){
+        return(Products[id].Id, Products[id].Name, Products[id].Price, Products[id].Amount,  Products[id].Treshold );
+    }
+    function GetInvoiceAmount(uint id) public view returns (uint256){
+        return Invoices[id].GetInvoiceAmount();
     }
 }
