@@ -51,11 +51,9 @@ contract TestBigPurchase {
     }
 
     function testDiscounts() public {
-        purchase.addProduct("Apple", 15, 1000, 100);
-        purchase.addProduct("Pineapple", 10, 1000, 100);
-        
-        uint256 Price = 15;
-        uint256 Amount = 150;
+        purchase.addProduct("Apple", 10, 1000, 100);
+        purchase.addProduct("Pineapple", 40, 1000, 250);
+
         purchase.buyProduct(1, 150);
 
         //uint ExpectedPrice = (Price.mul(Amount.mul(95))).div(100);
@@ -72,7 +70,15 @@ contract TestBigPurchase {
     }
     //well im not sure how this will work, as we dont have balance, i guess. 
     //Cant quite understand, from which address we deploy tests, and does it even have a balance
-    function testpayments() public {
+    function testDeletionIfAllBought() public {
+        purchase.buyProduct(2, 2000);
+        purchase.addProduct("Watermelon", 90, 600, 40);
+
+
+        string memory expected = "Watermelon";
+        (, string memory name ,,, ) = purchase.GetProduct(2);
+
+        Assert.equal(name, expected, "Second element in mapping should be Watermelon");
 
     }
 }

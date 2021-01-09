@@ -6,7 +6,7 @@ contract BigPurchase{
 
     using SafeMath for uint256;
 
-    event ProductAdded(string name, uint price, uint amount, uint treshold);
+    event ProductAdded(uint Id, string name, uint price, uint amount, uint treshold);
     event AwaitingPayment(string name, uint amount, uint price, uint InvoiceNumber);
     event ProductRunOut(string name);
 
@@ -67,7 +67,7 @@ contract BigPurchase{
             Products[ProductHashes[hashedProduct]].Amount += _amount;   
         }
 
-        emit ProductAdded(_name, _price, _amount, _treshold);
+        emit ProductAdded(ProductsCount ,_name, _price, _amount, _treshold);
     }
 
     function buyProduct(uint ProductId, uint amount) public {
@@ -86,6 +86,8 @@ contract BigPurchase{
 
         if(toBuy.Amount == amount){                                 //if all of supplied product was bought 
             delete(Products[ProductId]);
+
+            ProductsCount = ProductsCount.sub(1);
             emit ProductRunOut(toBuy.Name);                          //later implement shifting id of elements, so there will be no gaps in mapping
         } else {
             Products[ProductId].Amount = Products[ProductId].Amount.sub(amount);
