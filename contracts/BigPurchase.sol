@@ -25,11 +25,6 @@ contract BigPurchase{
     mapping(bytes32 => uint) public ProductHashes;    
     uint public ProductsCount;
 
-<<<<<<< HEAD
-    mapping(bytes => uint) ProductHashes;
-=======
->>>>>>> f08d489201ee116c7107aa61b351e74cb8af6818
-
     mapping(uint => Invoice) public Invoices;
     uint public InvoicesCount;
 
@@ -42,6 +37,12 @@ contract BigPurchase{
     modifier OnlyOwnedInvoices(uint InvoiceNumber){
         require(msg.sender == address(Invoices[InvoiceNumber]));
         _;
+    }
+
+    //thing is, as i understand, we cant access structures from another contract, as theyre not declared there. So we will get info from main contract. 
+    //On deploy, this function shall be deleted
+    function GetProduct(uint id) public view  returns (uint, string memory, uint, uint, uint){
+        return(Products[id].Id, Products[id].Name, Products[id].Price, Products[id].Amount,  Products[id].Treshold );
     }
 
     constructor() public {
@@ -62,7 +63,6 @@ contract BigPurchase{
 
         //if we have its hash in mapping, we get number of this product. If we dont, we add product hash to mapping, and create new product position.
         if(ProductHashes[hashedProduct] == 0){
->>>>>>> f08d489201ee116c7107aa61b351e74cb8af6818
             ProductsCount = ProductsCount.add(1);
             ProductHashes[hashedProduct] = ProductsCount;
             Products[ProductsCount] = Product(ProductsCount, _name, _price, _amount, _treshold);
